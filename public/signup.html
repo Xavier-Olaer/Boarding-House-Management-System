@@ -1,0 +1,514 @@
+<!-- public/signup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - Boarding House Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+      background: #0c1022;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .animated-background {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      background: linear-gradient(45deg, #0c1022, #1a1b4b);
+      z-index: 0;
+    }
+
+    .animated-background::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, transparent 20%, #0c1022 70%);
+      animation: moveGradient 15s linear infinite;
+    }
+
+    @keyframes moveGradient {
+      0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+      100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    .floating-particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: float 6s infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(100px);
+        opacity: 0;
+      }
+    }
+
+    .main-container {
+      display: flex;
+      width: 100%;
+      z-index: 2;
+    }
+
+    .description-section {
+      flex: 1;
+      padding: 60px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .description-section h1 {
+      font-size: 3.5rem;
+      margin-bottom: 30px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: left;
+    }
+
+    .description-section p {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #a4b0be;
+    }
+
+    .feature-list {
+      margin-top: 30px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      color: #a4b0be;
+    }
+
+    .feature-item i {
+      margin-right: 15px;
+      color: #3498db;
+      font-size: 24px;
+    }
+
+    .signup-section {
+      width: 500px;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-height: 100vh;
+      overflow-y: auto;
+    }
+
+    .signup-container {
+      width: 100%;
+    }
+
+    .signup-container h2 {
+      color: white;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a4b0be;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      font-size: 16px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .form-group input:focus ~ label,
+    .form-group input:valid ~ label,
+    .form-group select:focus ~ label,
+    .form-group select:valid ~ label {
+      top: -10px;
+      left: 5px;
+      font-size: 12px;
+      color: #3498db;
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+      padding-right: 2.5rem;
+    }
+
+    select option {
+      background: #1a1b4b;
+      color: white;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .login-link {
+      margin-top: 15px;
+      text-align: center;
+      color: #ffffff;
+      font-size: 1rem;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+    }
+
+    .login-link a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-left: 5px;
+    }
+
+    .login-link a:hover {
+      color: #2ecc71;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1024px) {
+      .description-section {
+        padding: 40px;
+      }
+      .description-section h1 {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
+      .description-section {
+        padding: 20px;
+        display: none;
+      }
+      .signup-section {
+        width: 100%;
+        padding: 20px;
+        height: 100vh;
+      }
+    }
+
+    .password-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #a4b0be;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      width: auto;
+      font-size: 18px;
+    }
+
+    .password-toggle:hover {
+      color: #3498db;
+      transform: translateY(-50%);
+      box-shadow: none;
+    }
+
+    .password-toggle i {
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-background"></div>
+  <div class="floating-particles" id="particles"></div>
+  
+  <div class="main-container">
+    <div class="description-section">
+      <h1>Join Us Now!</h1>
+      <p>Create your account and experience hassle-free boarding house living with our modern management system.</p>
+      
+      <div class="feature-list">
+        <div class="feature-item">
+          <i class='bx bx-check-shield'></i>
+          <span>Secure Account Management</span>
+        </div>
+        <div class="feature-item">
+          <i class='bx bx-user-circle'></i>
+          <span>Personal Dashboard Access</span>
+        </div>
+        <div class="feature-item">
+          <i class='bx bx-bell'></i>
+          <span>Real-time Notifications</span>
+        </div>
+        <div class="feature-item">
+          <i class='bx bx-support'></i>
+          <span>24/7 Support System</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="signup-section">
+      <div class="signup-container">
+        <h2>Create Account</h2>
+        <form id="signupForm">
+          <div class="form-group">
+            <input type="text" id="full_name" name="full_name" required>
+            <label for="full_name">Full Name</label>
+          </div>
+
+          <div class="form-group">
+            <select id="gender" name="gender" required>
+              <option value="" disabled selected></option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="others">Others</option>
+            </select>
+            <label for="gender">Gender</label>
+          </div>
+
+          <div class="form-group">
+            <input type="email" id="email" name="email" required>
+            <label for="email">Email Address</label>
+          </div>
+
+          <div class="form-group">
+            <input type="text" id="contact_number" name="contact_number" required>
+            <label for="contact_number">Contact Number</label>
+          </div>
+
+          <div class="form-group">
+            <div class="password-container">
+              <input type="password" id="password" name="password" required>
+              <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                <i class='bx bx-hide'></i>
+              </button>
+              <label for="password">Password</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="password-container">
+              <input type="password" id="confirm_password" name="confirm_password" required>
+              <button type="button" class="password-toggle" onclick="togglePassword('confirm_password')">
+                <i class='bx bx-hide'></i>
+              </button>
+              <label for="confirm_password">Confirm Password</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <select id="role" name="role" required>
+              <option value="" disabled selected></option>
+              <option value="tenant">Tenant</option>
+              <option value="landlord">Landlord</option>
+            </select>
+            <label for="role">Role</label>
+          </div>
+
+          <button type="submit">Sign Up</button>
+
+          <div class="login-link">
+            Already have an account? <a href="login.html">Log in</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const numberOfParticles = 50;
+
+      for (let i = 0; i < numberOfParticles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random position
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        
+        // Random animation duration
+        particle.style.animationDuration = (Math.random() * 6 + 3) + 's';
+        
+        // Random delay
+        particle.style.animationDelay = (Math.random() * 5) + 's';
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Initialize particles
+    createParticles();
+
+    // Password visibility toggle
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.nextElementSibling.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bx bx-show';
+      } else {
+        input.type = 'password';
+        icon.className = 'bx bx-hide';
+      }
+    }
+
+    // Form submission
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirm_password').value;
+      
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+
+      const formData = {
+        full_name: document.getElementById('full_name').value,
+        gender: document.getElementById('gender').value,
+        email: document.getElementById('email').value,
+        contact_number: document.getElementById('contact_number').value,
+        password: password,
+        role: document.getElementById('role').value
+      };
+
+      try {
+        const response = await fetch('http://localhost:5000/api/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Registration successful! Please login.');
+          window.location.href = 'login.html';
+        } else {
+          alert(data.error || 'Registration failed. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+      }
+    });
+
+    // Input animation
+    document.querySelectorAll('.form-group input, .form-group select').forEach(input => {
+      if (input.value) {
+        input.parentElement.classList.add('focused');
+      }
+      
+      input.addEventListener('focus', () => {
+        input.parentElement.classList.add('focused');
+      });
+      
+      input.addEventListener('blur', () => {
+        if (!input.value) {
+          input.parentElement.classList.remove('focused');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

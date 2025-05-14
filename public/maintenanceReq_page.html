@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Submit Maintenance Request - Boarding House Management System</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(45deg, #0c1022, #1a1b4b);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .system-title {
+      font-size: 2.5rem;
+      color: #fff;
+      text-align: center;
+      margin: 40px 0;
+      padding: 0 20px;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      box-sizing: border-box;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 500px;
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #3498db;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      color: #fff;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 150px;
+    }
+
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    textarea:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    button {
+      flex: 1;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button[type="submit"] {
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      color: #fff;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+      opacity: 0.9;
+    }
+
+    button[type="button"] {
+      background: rgba(231, 76, 60, 0.8);
+      color: #fff;
+    }
+
+    button[type="button"]:hover {
+      background: rgba(192, 57, 43, 0.8);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .description-tips {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .description-tips h3 {
+      color: #3498db;
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+
+    .description-tips ul {
+      margin: 0;
+      padding-left: 20px;
+      color: #fff;
+    }
+
+    .description-tips li {
+      margin: 5px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background-color: rgba(44, 62, 80, 0.8);
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 576px) {
+      .form-container {
+        width: 90%;
+        padding: 20px;
+        margin: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 class="system-title">BOARDING HOUSE MANAGEMENT SYSTEM</h1>
+
+  <div class="form-container">
+    <h2>Submit Maintenance Request</h2>
+    <form id="requestForm">
+      <div class="form-group">
+        <label for="description">Description of the Issue</label>
+        <textarea 
+          id="description" 
+          name="description" 
+          required
+          placeholder="Please provide detailed information about the maintenance issue..."
+        ></textarea>
+      </div>
+
+      <div class="description-tips">
+        <h3>Tips for a Good Description:</h3>
+        <ul>
+          <li>Be specific about the problem</li>
+          <li>Include the location of the issue</li>
+          <li>Mention how long the problem has existed</li>
+          <li>Describe any attempts to fix it</li>
+        </ul>
+      </div>
+
+      <div class="button-group">
+        <button type="submit">Submit Request</button>
+        <button type="button" onclick="window.location.href='tenant_page.html'">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <footer>
+    &copy; 2025 Boarding House Management System
+  </footer>
+
+  <script>
+    document.getElementById('requestForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const tenantData = JSON.parse(localStorage.getItem('user'));
+      const tenantId = tenantData ? tenantData.user_id : null;
+      const description = document.getElementById('description').value;
+
+      // Ensure tenantId and description are available
+      if (!tenantId || !description.trim()) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      // Fetch room_id from tenantData in localStorage
+      const tenantRoomId = tenantData ? tenantData.room_id : null;
+
+      console.log("Tenant Room ID: ", tenantRoomId);  // Debug log for room_id
+
+      // Ensure that room_id is present
+      if (!tenantRoomId) {
+        alert("Room ID is not found. Please contact support.");
+        return;
+      }
+
+      // Send the maintenance request to the backend
+      fetch('http://localhost:5000/api/tenant/maintenance-request', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ tenant_id: tenantId, room_id: tenantRoomId, description })
+})
+  .then(res => res.json())
+  .then(data => {
+    console.log("Response from server:", data); // Added logging for better debugging
+    if (data.message) {
+      alert('Maintenance request submitted!');
+      window.location.href = 'tenant_page.html'; // Redirect back to dashboard
+    } else {
+      alert('Failed to submit maintenance request.');
+    }
+  })
+  .catch(err => {
+    console.error('Error submitting request:', err);
+    alert('Failed to submit request.');
+    });
+  });
+    </script>
+</body>
+</html>

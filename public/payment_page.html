@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Make Payment - Boarding House Management System</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(45deg, #0c1022, #1a1b4b);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .system-title {
+      font-size: 2.5rem;
+      color: #fff;
+      text-align: center;
+      margin: 40px 0;
+      padding: 0 20px;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      box-sizing: border-box;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .payment-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #3498db;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      color: #fff;
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    input:focus, select:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+      padding-right: 2.5rem;
+    }
+
+    select option {
+      background-color: #1a1b4b;
+      color: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+      opacity: 0.9;
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .currency-input {
+      position: relative;
+    }
+
+    .currency-input::before {
+      content: "₱";
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .currency-input input {
+      padding-left: 30px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background-color: rgba(44, 62, 80, 0.8);
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+<body>
+  <h1 class="system-title">BOARDING HOUSE MANAGEMENT SYSTEM</h1>
+
+  <div class="payment-container">
+    <h2>Make a Payment</h2>
+    <form id="paymentForm">
+      <div class="form-group">
+        <label for="amount">Amount</label>
+        <div class="currency-input">
+          <input type="number" id="amount" name="amount" required placeholder="Enter amount" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="method">Payment Method</label>
+        <select id="method" name="method" required>
+          <option value="" disabled selected>Select payment method</option>
+          <option value="Cash">Cash</option>
+          <option value="GCash">GCash</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+        </select>
+      </div>
+
+      <button type="submit">Submit Payment</button>
+    </form>
+  </div>
+
+  <footer>
+    &copy; 2025 Boarding House Management System
+  </footer>
+
+  <script>
+    document.getElementById('paymentForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const tenantData = JSON.parse(localStorage.getItem('user'));
+      const tenantId = tenantData ? tenantData.user_id : null;
+      const amount = document.getElementById('amount').value;
+      const method = document.getElementById('method').value;
+
+      if (!tenantId || !amount || !method) {
+        alert("Please complete the form.");
+        return;
+      }
+
+      fetch(`http://localhost:5000/api/tenant/payment/${tenantId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount, method })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.message) {
+            alert('Payment submitted successfully!');
+            window.location.href = 'tenant_page.html';
+          } else {
+            alert('Unexpected response: ' + JSON.stringify(data));
+          }
+        })
+        .catch(err => {
+          console.error('Error submitting payment:', err);
+          alert('Failed to submit payment.');
+        });
+    });
+  </script>
+</body>
+</html>

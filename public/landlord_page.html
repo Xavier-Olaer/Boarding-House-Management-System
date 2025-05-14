@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Landlord Dashboard - Boarding House Management System</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(45deg, #0c1022, #1a1b4b);
+      color: #fff;
+    }
+
+    #sidebar {
+      position: fixed;
+      width: 250px;
+      height: 100vh;
+      background: rgba(13, 17, 38, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      z-index: 100;
+    }
+
+    #sidebar h2 {
+      color: white;
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      color: #a4b0be;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
+    }
+
+    #sidebar a i {
+      margin-right: 10px;
+      font-size: 20px;
+    }
+
+    #sidebar a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #3498db;
+    }
+
+    #content {
+      margin-left: 250px;
+      padding: 30px;
+      min-height: calc(100vh - 60px);
+    }
+
+    .content-section {
+      background: rgba(13, 17, 38, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    .dashboard-section {
+      background: rgba(13, 17, 38, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dashboard-section h2 {
+      color: #3498db;
+      margin-bottom: 20px;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    .section-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-box {
+      background: rgba(13, 17, 38, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+
+    .stat-box h3 {
+      font-size: 2.5rem;
+      color: #2ecc71;
+      margin-bottom: 10px;
+    }
+
+    .stat-box p {
+      color: #fff;
+      font-size: 1.1rem;
+    }
+
+    button {
+      padding: 12px 25px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .room-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .room-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .room-card h3 {
+      color: #3498db;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    .room-info {
+      margin-bottom: 15px;
+    }
+
+    .room-info p {
+      margin: 8px 0;
+      color: #a4b0be;
+    }
+
+    .room-info strong {
+      color: #2ecc71;
+      margin-right: 8px;
+    }
+
+    .tenant-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .tenant-item, .rent-item, .room-item {
+      background: rgba(13, 17, 38, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .tenant-item:hover, .rent-item:hover, .room-item:hover {
+      transform: translateX(5px);
+      background: rgba(13, 17, 38, 0.8);
+    }
+
+    .tenant-item p, .rent-item p, .room-item p {
+      margin: 8px 0;
+      color: #fff;
+    }
+
+    .tenant-item strong {
+      color: #2ecc71;
+      margin-right: 8px;
+    }
+
+    .blocked-status {
+      color: #e74c3c;
+      font-weight: 600;
+    }
+
+    .active-status {
+      color: #2ecc71;
+      font-weight: 600;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    @media (max-width: 768px) {
+      #sidebar {
+        width: 70px;
+        padding: 15px 10px;
+      }
+
+      #sidebar h2 {
+        display: none;
+      }
+
+      #sidebar a span {
+        display: none;
+      }
+
+      #content {
+        margin-left: 70px;
+      }
+
+      .section-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .room-grid, .tenant-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tenant-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+      background: rgba(13, 17, 38, 0.8);
+      padding: 1rem;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .tenant-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+      padding: 1rem;
+      border-radius: 8px;
+      background: rgba(13, 17, 38, 0.6);
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .rent-header {
+      background: rgba(13, 17, 38, 0.8) !important;
+      color: #fff;
+    }
+
+    .rent-details {
+      background: rgba(13, 17, 38, 0.6) !important;
+      color: #fff;
+    }
+
+    .chat-container {
+      background: rgba(13, 17, 38, 0.8);
+      backdrop-filter: blur(10px);
+    }
+
+    .chat-messages {
+      background: rgba(13, 17, 38, 0.6);
+    }
+
+    select option {
+      background-color: rgba(13, 17, 38, 0.95);
+      color: #fff;
+    }
+
+    #chatBox {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 350px;
+      height: 500px;
+      background: rgba(13, 17, 38, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: none;
+      flex-direction: column;
+      z-index: 999;
+      overflow: hidden;
+    }
+
+    #messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      margin: 4px 0;
+      border-radius: 15px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .chat-bubble.sent {
+      background-color: #25D366;
+      margin-left: auto;
+      border-bottom-right-radius: 5px;
+      color: white;
+    }
+
+    .chat-bubble.received {
+      background-color: rgba(13, 17, 38, 0.8);
+      margin-right: auto;
+      border-bottom-left-radius: 5px;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .input-area {
+      padding: 15px;
+      background: rgba(13, 17, 38, 0.6);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #message-input {
+      width: 100%;
+      padding: 10px;
+      background: rgba(13, 17, 38, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 10px;
+      resize: none;
+    }
+
+    #message-input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .button-group button {
+      flex: 1;
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    .action-btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      margin-right: 8px;
+      font-size: 14px;
+    }
+
+    .unblock-btn {
+      background: linear-gradient(45deg, #28a745, #2ecc71);
+      color: white;
+    }
+
+    .unblock-btn:hover {
+      background: linear-gradient(45deg, #218838, #27ae60);
+    }
+
+    
+    @media (max-width: 768px) {
+      #sidebar {
+        width: 220px;
+      }
+      #content {
+        margin-left: 220px;
+      }
+      .section-stats {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 576px) {
+      #sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      #content {
+        margin-left: 0;
+      }
+      .dashboard-section {
+        margin: 10px;
+      }
+    }
+
+    .tenant-grid {
+      display: grid;
+      gap: 1rem;
+      margin: 20px 0;
+    }
+
+    
+    .room-item p, .tenant-item p {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .room-item p strong, .tenant-item p strong {
+      color: #2ecc71;
+      margin-right: 8px;
+      min-width: 120px;
+    }
+
+    .room-item p span, .tenant-item p span {
+      color: #fff;
+    }
+
+    
+    footer {
+      text-align: center;
+      padding: 15px;
+      background-color: rgba(13, 17, 38, 0.8);
+      color: white;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    
+    .room-item, .tenant-item {
+      background: rgba(13, 17, 38, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    
+    .room-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .room-item h3 {
+      color: #3498db;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    .room-info {
+      margin-bottom: 15px;
+    }
+
+    .room-info p {
+      margin: 8px 0;
+      color: #a4b0be;
+    }
+
+    .room-info strong {
+      color: #2ecc71;
+      margin-right: 8px;
+    }
+
+    .room-info span {
+      color: #fff;
+    }
+
+    
+    select, textarea {
+      width: 100%;
+      padding: 12px;
+      background: rgba(13, 17, 38, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+      padding-right: 2.5rem;
+    }
+
+    select:focus, textarea:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+    }
+
+    select option {
+      background-color: rgba(13, 17, 38, 0.95);
+      color: #fff;
+      padding: 12px;
+    }
+
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+
+    .maintenance-item {
+      background: rgba(13, 17, 38, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .maintenance-item p {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .maintenance-item p strong {
+      color: #2ecc71;
+      margin-right: 8px;
+      min-width: 120px;
+    }
+
+    .maintenance-item p span {
+      color: #fff;
+    }
+
+    .status-group {
+      margin: 15px 0;
+    }
+
+    .status-group label {
+      display: block;
+      color: #2ecc71;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .reason-group {
+      margin: 15px 0;
+    }
+
+    .reason-group label {
+      display: block;
+      color: #2ecc71;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .update-status-btn {
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+    }
+
+    .update-status-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+
+    #room-management-section,
+    #tenant-management-section,
+    #rent-due-management-section,
+    #maintenance-section,
+    #activity-logs-section {
+      display: none;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-badge.inactive::before {
+      content: '\ea6e';  /* Boxicons circle icon */
+      font-family: 'boxicons';
+      font-size: 1.1em;
+    }
+
+    .status-badge.active::before {
+      content: '\ea6b';  /* Boxicons check-circle icon */
+      font-family: 'boxicons';
+      font-size: 1.1em;
+    }
+
+    .status-badge.blocked::before {
+      content: '\ea6d';  /* Boxicons lock icon */
+      font-family: 'boxicons';
+      font-size: 1.1em;
+    }
+
+    .blocked {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .active {
+      background-color: #2ecc71;
+      color: white;
+    }
+
+    .tenant-item {
+      background: rgba(13, 17, 38, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .tenant-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .tenant-header-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tenant-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .status-badge.inactive {
+      background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+      color: white;
+    }
+
+    .status-badge.active {
+      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      color: white;
+    }
+
+    .tenant-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .chat-btn {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      color: white;
+    }
+
+    .edit-btn {
+      background: linear-gradient(45deg, #f1c40f, #f39c12);
+      color: white;
+    }
+
+    .unblock-btn {
+      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      color: white;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .action-btn i {
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+      .tenant-details {
+        grid-template-columns: 1fr;
+      }
+      
+      .tenant-actions {
+        flex-direction: column;
+      }
+      
+      .action-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .blocked-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(13, 17, 38, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      z-index: 1000;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    .blocked-popup-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .blocked-popup-header i {
+      font-size: 48px;
+      color: #e74c3c;
+      margin-bottom: 15px;
+    }
+
+    .blocked-popup-header h2 {
+      color: #e74c3c;
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .blocked-popup-content {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .blocked-popup-content p {
+      margin: 10px 0;
+      line-height: 1.6;
+    }
+
+    .blocked-popup-content .blocked-until {
+      font-size: 1.2em;
+      color: #e74c3c;
+      font-weight: 600;
+      margin: 15px 0;
+    }
+
+    .blocked-popup-actions {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .blocked-popup-actions button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .blocked-popup-actions .contact-btn {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      color: white;
+    }
+
+    .blocked-popup-actions .close-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .blocked-popup-actions button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .blocked-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 999;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translate(-50%, -60%);
+        opacity: 0;
+      }
+      to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .contact-info {
+      background: rgba(52, 152, 219, 0.1);
+      border: 1px solid rgba(52, 152, 219, 0.3);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .contact-info h3 {
+      color: #3498db;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+      text-align: center;
+    }
+
+    .contact-info p {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0;
+      color: #fff;
+      font-size: 1.1em;
+    }
+
+    .contact-info i {
+      font-size: 24px;
+      color: #3498db;
+    }
+
+    .appeal-message {
+      text-align: center;
+      color: #fff;
+      font-size: 1.1em;
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    .warning-message {
+      background: rgba(231, 76, 60, 0.1);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .warning-message p {
+      color: #e74c3c;
+      font-weight: 500;
+      margin: 10px 0;
+    }
+
+    .warning-message .blocked-until {
+      font-size: 1.2em;
+      font-weight: 600;
+      margin-top: 15px;
+    }
+  </style>
+
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+<script>
+  // Move the overview loading to DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', function() {
+    // Hide all sections except overview
+    const sections = document.querySelectorAll('.dashboard-section');
+    sections.forEach(section => {
+        if (section.id !== 'overview-section') {
+            section.style.display = 'none';
+        }
+    });
+
+    // Load overview data
+    loadOverviewData();
+  });
+
+  function loadOverviewData() {
+    fetch('http://localhost:5000/api/landlord/overview')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('totalTenants').textContent = data.totalTenants;
+        document.getElementById('totalRooms').textContent = data.totalRooms;
+        document.getElementById('totalRentDue').textContent = `₱${data.totalRentDue.toFixed(2)}`;
+      })
+      .catch(err => {
+        console.error('Error loading overview:', err);
+      });
+  }
+
+  function hideAllSections() {
+    const sections = document.querySelectorAll('.dashboard-section');
+    sections.forEach(section => {
+        section.style.display = 'none';
+    });
+  }
+
+  // Update the click handlers for all navigation buttons
+  document.getElementById('overviewBtn').addEventListener('click', () => {
+    hideAllSections();
+    document.getElementById('overview-section').style.display = 'block';
+    loadOverviewData();
+  });
+
+  document.getElementById('roomManagementBtn').addEventListener('click', () => {
+    hideAllSections();
+    document.getElementById('room-management-section').style.display = 'block';
+    fetchRooms();
+  });
+
+  document.getElementById('tenantBtn').addEventListener('click', () => {
+    hideAllSections();
+    document.getElementById('tenant-management-section').style.display = 'block';
+    loadTenants();
+  });
+
+  document.getElementById('rentDueBtn').addEventListener('click', () => {
+    hideAllSections();
+    document.getElementById('rent-due-management-section').style.display = 'block';
+    // Your existing rent due loading code
+  });
+
+  document.getElementById('maintenanceBtn').addEventListener('click', () => {
+    hideAllSections();
+    document.getElementById('maintenance-section').style.display = 'block';
+    // Your existing maintenance loading code
+  });
+
+  document.getElementById('activityLogsBtn').addEventListener('click', () => {
+    hideAllSections();
+    document.getElementById('activity-logs-section').style.display = 'block';
+    // Your existing activity logs loading code
+  });
+
+  window.onload = function () {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      window.location.href = 'login.html';
+    }
+  };
+
+function editTenantDetails(tenantId) {
+  window.location.href = `editTenant.html?tenantId=${tenantId}`;
+}
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  window.location.href = 'login.html';
+}
+
+// Update the showBlockedPopup function
+function showBlockedPopup(blockedUntil) {
+  // Create overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'blocked-overlay';
+  
+  // Create popup
+  const popup = document.createElement('div');
+  popup.className = 'blocked-popup';
+  
+  // Format the blocked until date
+  const blockedDate = new Date(blockedUntil);
+  const formattedDate = blockedDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+  
+  popup.innerHTML = `
+    <div class="blocked-popup-header">
+      <i class='bx bx-lock-alt'></i>
+      <h2>Account Blocked</h2>
+    </div>
+    <div class="blocked-popup-content">
+      <div class="warning-message">
+        <p>Your account has been temporarily blocked due to violation of boarding house policies.</p>
+        <p class="blocked-until">Blocked until: ${formattedDate}</p>
+      </div>
+      <div class="contact-info">
+        <h3>Contact Information</h3>
+        <p><i class='bx bx-envelope'></i> Email: REMOVED</p>
+        <p><i class='bx bx-phone'></i> Contact: 09109953983</p>
+      </div>
+      <p class="appeal-message">Please contact the landlord for more information or to appeal this decision.</p>
+    </div>
+    <div class="blocked-popup-actions">
+      <button class="contact-btn" onclick="openChat(${LANDLORD_ID})">
+        <i class='bx bx-message-square-dots'></i> Contact Landlord
+      </button>
+      <button class="close-btn" onclick="closeBlockedPopup()">
+        <i class='bx bx-x'></i> Close
+      </button>
+    </div>
+  `;
+  
+  // Add to document
+  document.body.appendChild(overlay);
+  document.body.appendChild(popup);
+  
+  // Prevent scrolling
+  document.body.style.overflow = 'hidden';
+}
+
+// Add this function to close the popup
+function closeBlockedPopup() {
+  const overlay = document.querySelector('.blocked-overlay');
+  const popup = document.querySelector('.blocked-popup');
+  
+  if (overlay) overlay.remove();
+  if (popup) popup.remove();
+  
+  // Restore scrolling
+  document.body.style.overflow = '';
+}
+
+// Update the checkBlockedStatus function to use the new popup
+function checkBlockedStatus() {
+  fetch('http://localhost:5000/api/tenant/blocked-status')
+    .then(res => res.json())
+    .then(data => {
+      if (data.is_blocked && data.blocked_until) {
+        showBlockedPopup(data.blocked_until);
+      }
+    })
+    .catch(err => console.error('Error checking blocked status:', err));
+}
+
+// Call checkBlockedStatus when the page loads
+document.addEventListener('DOMContentLoaded', checkBlockedStatus);
+</script>
+
+</head>
+
+<body data-landlord-id="1">
+
+
+  <div id="sidebar">
+    <h2>Welcome, Landlord!</h2>
+    <a href="#" id="overviewBtn"><i class='bx bx-grid-alt'></i><span>Overview</span></a>
+    <a href="#" id="roomManagementBtn"><i class='bx bx-building-house'></i><span>Rooms</span></a>
+    <a href="#" id="tenantBtn"><i class='bx bx-user'></i><span>Tenants</span></a>
+    <a href="#" id="rentDueBtn"><i class='bx bx-money'></i><span>Rent Due</span></a>
+    <a href="#" id="maintenanceBtn"><i class='bx bx-wrench'></i><span>Maintenance</span></a>
+    <a href="#" id="activityLogsBtn"><i class='bx bx-history'></i><span>Activity</span></a>
+    <a href="#" onclick="logout()"><i class='bx bx-log-out'></i><span>Logout</span></a>
+  </div>
+
+  <div id="content">
+
+    <div class="dashboard-section" id="overview-section">
+      <h2>Overview</h2>
+      <div class="section-stats">
+        <div class="stat-box">
+          <h3 id="totalTenants">0</h3>
+          <p>Total Tenants</p>
+        </div>
+        <div class="stat-box">
+          <h3 id="totalRooms">0</h3>
+          <p>Total Rooms</p>
+        </div>
+        <div class="stat-box">
+          <h3 id="totalRentDue">₱0</h3>
+          <p>Total Rent Due</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-section" id="room-management-section" style="display: none;">
+      <h2>Room Management</h2>
+      <button id="addRoomBtn" onclick="window.location.href='addRoom.html'">
+        <i class='bx bx-plus'></i> Add New Room
+      </button>
+
+  
+      <div id="room-list" class="room-grid">
+    
+      </div>
+    </div>
+
+    <div class="dashboard-section" id="tenant-management-section" style="display: none;">
+      <h2>Tenant Management</h2>
+      <div id="tenant-list" class="tenant-list"></div>
+    </div>
+
+    <div class="dashboard-section" id="rent-due-management-section" style="display: none;">
+      <h2>Rent Due Management</h2>
+      <div id="rent-due-list"></div>
+    </div>
+
+    <div class="dashboard-section" id="maintenance-section" style="display: none;">
+      <h2>Maintenance Requests</h2>
+      <div id="maintenance-list"></div>
+    </div>
+
+    <div class="dashboard-section" id="activity-logs-section" style="display: none;">
+      <h2>Activity Logs</h2>
+      <div id="activity-logs-list"></div>
+      </div>
+    </div>
+
+
+<div id="chatBox">
+  <div id="messages-container"></div>
+  <div class="input-area">
+    <textarea id="message-input" placeholder="Type your message..." rows="1"></textarea>
+    <div class="button-group">
+      <button onclick="sendMessageToTenant()">Send</button>
+      <button onclick="closeChat()">Close</button>
+    </div>
+  </div>
+</div>
+
+  <footer>
+    <p>&copy; 2025 Boarding House Management System</p>
+  </footer>
+
+  <button id="close-chat-button" onclick="closeChat()">Close Chat</button>
+  <script>
+    const LANDLORD_ID = document.body.dataset.landlordId;
+    const roomList = document.getElementById('room-list');
+ 
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const overviewSection = document.getElementById('overview-section');
+      const tenantSection = document.getElementById('tenant-management-section');
+      const rentDueSection = document.getElementById('rent-due-management-section');
+      const maintenanceSection = document.getElementById('maintenance-section');
+      const activityLogsSection = document.getElementById('activity-logs-section');
+      const roomManagementSection = document.getElementById('room-management-section');
+      const roomSelect = document.getElementById('tenantRoom');
+      const roomList = document.getElementById('room-list');
+      const addRoomBtn = document.getElementById('addRoomBtn');
+
+
+      const overviewBtn = document.getElementById('overviewBtn');
+      const tenantBtn = document.getElementById('tenantBtn');
+      const rentDueBtn = document.getElementById('rentDueBtn');
+      const maintenanceBtn = document.getElementById('maintenanceBtn');
+      const activityLogsBtn = document.getElementById('activityLogsBtn');
+      const roomManagementBtn = document.getElementById('roomManagementBtn');
+      
+      
+      function hideAllSections() {
+        overviewSection.style.display = 'none';
+        tenantSection.style.display = 'none';
+        rentDueSection.style.display = 'none';
+        maintenanceSection.style.display = 'none';
+        activityLogsSection.style.display = 'none';
+        roomManagementSection.style.display = 'none';
+      }
+
+      overviewBtn.addEventListener('click', () => {
+        hideAllSections();
+        overviewSection.style.display = 'block';
+        loadOverviewData();
+      });
+
+
+    tenantBtn.addEventListener('click', () => {
+      hideAllSections();
+      tenantSection.style.display = 'block';
+      const tenantList = document.getElementById('tenant-list');
+      tenantList.innerHTML = '';
+
+      fetch('http://localhost:5000/api/landlord/tenants')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.tenants?.length) {
+            data.tenants.forEach(tenant => {
+              // Format move-in date
+              let moveInDisplay = 'Not Available';
+              if (tenant.move_in_date) {
+                try {
+                  const moveInDate = new Date(tenant.move_in_date);
+                  moveInDisplay = moveInDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  });
+                } catch (e) {
+                  console.error('Move-in date error:', e);
+                }
+              }
+
+              // Format move-out date
+              let moveOutDisplay = 'Currently Active';
+              if (tenant.move_out_date) {
+                try {
+                  const moveOutDate = new Date(tenant.move_out_date);
+                  if (!isNaN(moveOutDate.getTime())) {
+                    moveOutDisplay = moveOutDate.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    });
+                  }
+                } catch (e) {
+                  console.error('Move-out date error:', e);
+                }
+              }
+
+              // Check tenant status
+              const isBlocked = tenant.blocked_until && new Date(tenant.blocked_until) > new Date() && tenant.manually_unblocked === 0;
+              const isInactive = tenant.move_out_date && new Date(tenant.move_out_date) <= new Date();
+              
+              // Determine status class and text
+              let statusClass = 'active';
+              let statusText = 'Active';
+              
+              if (isBlocked) {
+                statusClass = 'blocked';
+                statusText = 'Blocked';
+              } else if (isInactive) {
+                statusClass = 'inactive';
+                statusText = 'Inactive';
+              }
+
+              // Create tenant item
+              const tenantItem = document.createElement('div');
+              tenantItem.className = 'tenant-item';
+              tenantItem.innerHTML = `
+                <div class="tenant-header-info">
+                  <p><strong>Name:</strong> <span>${tenant.full_name || '<span style="color: #e74c3c;">User data missing</span>'}</span></p>
+                </div>
+                <div class="tenant-details">
+                  <p><strong>Status:</strong> <span class="status-badge ${statusClass}">${statusText}</span></p>
+                  <p><strong>User ID:</strong> <span>${tenant.user_id || 'N/A'}</span></p>
+                  <p><strong>Tenant ID:</strong> <span>${tenant.tenant_id || 'N/A'}</span></p>
+                  <p><strong>Room:</strong> <span>${tenant.room_label || 'Not Assigned'}</span></p>
+                  <p><strong>Room Type:</strong> <span>${tenant.room_type || 'N/A'}</span></p>
+                  <p><strong>Move-in Date:</strong> <span>${moveInDisplay}</span></p>
+                  <p><strong>Move-out Date:</strong> <span>${moveOutDisplay}</span></p>
+                  <p><strong>Contact:</strong> <span>${tenant.contact_number || 'Not Available'}</span></p>
+                  <p><strong>Email:</strong> <span>${tenant.email || 'Not Available'}</span></p>
+                </div>
+                <div class="tenant-actions">
+                  <button class="action-btn chat-btn" data-tenant-id="${tenant.user_id}">
+                    <i class='bx bx-message-square-dots'></i> Chat
+                  </button>
+                  <button class="action-btn edit-btn" onclick="editTenantDetails(${tenant.tenant_id})">
+                    <i class='bx bx-edit'></i> Edit
+                  </button>
+                  ${isBlocked ? 
+                    `<button class="action-btn unblock-btn" onclick="unblockTenant(${tenant.tenant_id})">
+                      <i class='bx bx-lock-open'></i> Unblock
+                    </button>` 
+                    : ''
+                  }
+                </div>
+              `;
+              tenantList.appendChild(tenantItem);
+            });
+
+            // Add event listeners for chat buttons
+            document.querySelectorAll('.chat-btn').forEach(button => {
+              button.addEventListener('click', function() {
+                const tenantId = this.dataset.tenantId;
+                openChat(tenantId);
+              });
+            });
+          } else {
+            tenantList.innerHTML = '<p>No tenants found.</p>';
+          }
+        })
+        .catch(err => {
+          console.error('Error loading tenants:', err);
+          tenantList.innerHTML = '<p>Error loading tenant data.</p>';
+        });
+    });
+
+    rentDueBtn.addEventListener('click', () => {
+      hideAllSections();
+      rentDueSection.style.display = 'block';
+      const rentList = document.getElementById('rent-due-list');
+      rentList.innerHTML = '';
+      fetch('http://localhost:5000/api/landlord/rent-due')
+        .then(res => res.json())
+        .then(data => {
+           if (data.rentDue?.length) {
+            // Group rent records by tenant
+            const tenantGroups = {};
+            data.rentDue.forEach(rent => {
+              if (!tenantGroups[rent.tenant_name]) {
+                tenantGroups[rent.tenant_name] = [];
+              }
+              tenantGroups[rent.tenant_name].push(rent);
+            });
+
+            // Create collapsible sections for each tenant
+            Object.entries(tenantGroups).forEach(([tenantName, records]) => {
+              const tenantSection = document.createElement('div');
+              tenantSection.className = 'tenant-rent-section';
+              
+              // Calculate total unpaid amount for this tenant
+              const totalUnpaid = records
+                .filter(record => !record.paid)
+                .reduce((sum, record) => sum + parseFloat(record.amount_due), 0);
+
+              // Create header (always visible)
+              tenantSection.innerHTML = `
+                <div class="rent-header" onclick="toggleRentDetails(this)" style="
+                    background: #f8f9fa;
+                    padding: 15px;
+                    margin-bottom: 5px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    transition: background-color 0.3s ease;">
+                  <div>
+                    <strong>${tenantName}</strong>
+                    ${totalUnpaid > 0 ? 
+                      `<span style="color: #b85c00; margin-left: 10px;">
+                        (Unpaid: ₱${totalUnpaid.toFixed(2)})
+                      </span>` : 
+                      '<span style="color: green; margin-left: 10px;">(All Paid)</span>'}
+                  </div>
+                  <span class="toggle-icon">▼</span>
+                </div>
+                <div class="rent-details" style="display: none; padding: 15px; background: white; border-radius: 8px; margin-bottom: 15px;">
+                  ${records.map(rent => `
+                    <div class="rent-item" style="margin-bottom: 15px; padding: 10px; border-left: 3px solid ${rent.paid ? '#2ecc71' : '#e74c3c'};">
+                      <p><strong>Amount Due:</strong> ₱${parseFloat(rent.amount_due).toFixed(2)}</p>
+                      <p><strong>Due Date:</strong> ${new Date(rent.due_date).toLocaleDateString()}</p>
+                      <p><strong>Status:</strong> 
+                        <span style="color: ${rent.paid ? 'green' : '#b85c00'}">
+                          ${rent.paid ? 'Paid' : 'Unpaid'}
+                        </span>
+                      </p>
+                    </div>
+                  `).join('')}
+                </div>
+              `;
+              
+              rentList.appendChild(tenantSection);
+            });
+
+            // Add the toggle function to the page
+            if (!window.toggleRentDetails) {
+              window.toggleRentDetails = function(header) {
+                const details = header.nextElementSibling;
+                const icon = header.querySelector('.toggle-icon');
+                if (details.style.display === 'none') {
+                  details.style.display = 'block';
+                  icon.textContent = '▲';
+                  header.style.backgroundColor = '#e9ecef';
+                } else {
+                  details.style.display = 'none';
+                  icon.textContent = '▼';
+                  header.style.backgroundColor = '#f8f9fa';
+                }
+              };
+            }
+          } else {
+            rentList.innerHTML = '<p>No rent due records found.</p>';
+          }
+        })
+        .catch(err => {
+          console.error('Error loading rent due:', err);
+          rentList.innerHTML = '<p>Error loading rent due data.</p>';
+        });
+    });
+
+      maintenanceBtn.addEventListener('click', () => {
+        hideAllSections();
+        maintenanceSection.style.display = 'block';
+        const list = document.getElementById('maintenance-list');
+        list.innerHTML = '';
+        fetch('http://localhost:5000/api/landlord/maintenance-requests')
+          .then(res => res.json())
+          .then(data => {
+            if (data.requests?.length) {
+              data.requests.forEach(req => {
+                list.appendChild(renderMaintenanceRequest(req));
+              });
+            } else {
+              list.innerHTML = '<p>No maintenance requests found.</p>';
+            }
+          })
+          .catch(err => {
+            console.error('Error loading maintenance requests:', err);
+            list.innerHTML = '<p>Error loading maintenance data.</p>';
+          });
+      });
+
+
+      activityLogsBtn.addEventListener('click', () => {
+        hideAllSections();
+        activityLogsSection.style.display = 'block';
+        const logsList = document.getElementById('activity-logs-list');
+        logsList.innerHTML = '';
+        fetch('http://localhost:5000/api/landlord/activity-logs')
+          .then(res => res.json())
+          .then(data => {
+            if (data.logs?.length) {
+              data.logs.forEach(log => {
+                const logItem = document.createElement('div');
+                logItem.className = 'tenant-item';
+                logItem.innerHTML = `
+                  <p><strong>Activity:</strong> ${log.activity}</p>
+                  <p><strong>Performed By:</strong> ${log.user_name}</p>
+                  <p><strong>Date:</strong> ${new Date(log.created_at).toLocaleString()}</p>
+                  <p><strong>Entity:</strong> ${log.entity_type} (ID: ${log.entity_id})</p>
+                `;
+                logsList.appendChild(logItem);
+              });
+            } else {
+              logsList.innerHTML = '<p>No activity logs found.</p>';
+            }
+          })
+          .catch(err => {
+            console.error('Error loading activity logs:', err);
+            logsList.innerHTML = '<p>Error loading activity logs data.</p>';
+          });
+      });
+
+// Function to fetch rooms and display them
+      function fetchRooms() {
+        roomList.innerHTML = '';  // Clear existing rooms
+
+        fetch('http://localhost:5000/api/landlord/rooms')
+          .then(res => res.json())
+          .then(data => {
+            const rooms = Array.isArray(data) ? data : data.rooms;
+
+            if (rooms?.length) {
+              rooms.forEach(room => {
+                const roomItem = document.createElement('div');
+                roomItem.className = 'room-item';
+
+                const statusText = room.status === 0
+                  ? 'Vacant'
+                  : room.status === 1
+                    ? 'Occupied'
+                    : 'Partially Occupied';
+
+                roomItem.innerHTML = `
+                  <p><strong>Room Label:</strong> <span>${room.room_label}</span></p>
+                  <p><strong>Status:</strong> <span>${statusText}</span></p>
+                  <p><strong>Rent:</strong> <span>₱${room.price}</span></p>
+                  <p><strong>Type:</strong> <span>${room.room_type}</span></p>
+                  <p><strong>Room ID:</strong> <span>${room.room_id}</span></p>
+                  <p><strong>Capacity:</strong> <span>${room.capacity}</span></p>
+                  <p><strong>Occupancy:</strong> <span>${room.occupancy} / ${room.capacity}</span></p>
+                `;
+
+                roomList.appendChild(roomItem);
+              });
+            } else {
+              roomList.innerHTML = '<p>No rooms available.</p>';
+            }
+          })
+          .catch(err => {
+            console.error('Error fetching rooms:', err);
+            roomList.innerHTML = '<p>Error loading rooms.</p>';
+          });
+      }
+
+      roomManagementBtn.addEventListener('click', () => {
+        console.log('Room Management Button Clicked');
+        hideAllSections(); // Make sure other sections are hidden
+        roomManagementSection.style.display = 'block'; // Then show only this
+        fetchRooms(); // And fetch the data
+      });
+
+      
+// Fetch tenants and render them on page load
+document.addEventListener('DOMContentLoaded', fetchTenantsAndRender);
+
+// Function to fetch tenants from the server and render them
+async function fetchTenantsAndRender() {
+  try {
+    const res = await fetch('http://localhost:5000/api/landlord/tenants');
+    const data = await res.json();
+    
+    // Assuming the data returned has a `tenants` property
+    if (data && data.tenants) {
+      renderTenants(data.tenants); // Render the tenants list
+    } else {
+      console.error('Tenants data not found');
+    }
+  } catch (err) {
+    console.error('Error fetching tenants:', err);
+    alert('Failed to load tenants.');
+  }
+}
+
+
+function renderTenants(tenants) {
+  tenants.forEach(tenant => {
+    const tenantItem = document.createElement('div');
+    tenantItem.classList.add('tenant-item');
+    
+    tenantItem.innerHTML = `
+      <div class="tenant-header-info">
+        <p><strong>Name:</strong> <span>${tenant.full_name || '<span style="color: #e74c3c;">User data missing</span>'}</span></p>
+      </div>
+      <div class="tenant-details">
+        <p><strong>Status:</strong> <span class="status-badge ${tenant.is_blocked ? 'blocked' : 'active'}">${tenant.is_blocked ? 'Blocked' : 'Active'}</span></p>
+        <p><strong>User ID:</strong> <span>${tenant.user_id || 'N/A'}</span></p>
+        <p><strong>Tenant ID:</strong> <span>${tenant.tenant_id || 'N/A'}</span></p>
+        <p><strong>Room:</strong> <span>${tenant.room_label || 'Not Assigned'}</span></p>
+        <p><strong>Room Type:</strong> <span>${tenant.room_type || 'N/A'}</span></p>
+        <p><strong>Move-in Date:</strong> <span>${moveInDisplay}</span></p>
+        <p><strong>Move-out Date:</strong> <span>${moveOutDisplay}</span></p>
+        <p><strong>Contact:</strong> <span>${tenant.contact_number || 'Not Available'}</span></p>
+        <p><strong>Email:</strong> <span>${tenant.email || 'Not Available'}</span></p>
+      </div>
+      <div class="tenant-actions">
+        <button class="action-btn chat-btn" data-tenant-id="${tenant.user_id}">
+          <i class='bx bx-message-square-dots'></i> Chat
+        </button>
+        <button class="action-btn edit-btn" onclick="editTenantDetails(${tenant.tenant_id})">
+          <i class='bx bx-edit'></i> Edit
+        </button>
+        ${tenant.is_blocked ? 
+          `<button class="action-btn unblock-btn" onclick="unblockTenant(${tenant.tenant_id})">
+            <i class='bx bx-lock-open'></i> Unblock
+          </button>` 
+          : ''
+        }
+      </div>
+    `;
+    
+    document.getElementById('tenant-list').appendChild(tenantItem);
+  });
+}
+
+  function editTenantDetails(tenantId) {
+    window.location.href = `/public/editTenant.html?tenantId=${tenantId}`;
+  }
+
+});
+
+let activeTenantId = null;
+
+document.addEventListener('click', function (event) {
+  if (event.target && event.target.classList.contains('chat-btn')) {
+    const tenantId = event.target.dataset.tenantId;
+    openChat(tenantId);
+  }
+});
+
+
+function closeChat() {
+  const chatBox = document.getElementById('chatBox');
+  chatBox.style.display = 'none';
+  activeTenantId = null;
+  
+  // Remove event listener when chat is closed
+  const messageInput = document.getElementById('message-input');
+  if (messageInput) {
+    messageInput.replaceWith(messageInput.cloneNode(true));
+  }
+}
+
+function openChat(tenantUserId) {
+  const chatBox = document.getElementById('chatBox');
+  chatBox.style.display = 'flex';  // Changed to flex to maintain layout
+  activeTenantId = tenantUserId;
+  fetchChatMessages(tenantUserId);
+
+  // Add event listener for Enter key only when chat is opened
+  const messageInput = document.getElementById('message-input');
+  if (messageInput) {
+    messageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessageToTenant();
+      }
+    });
+  }
+}
+
+function fetchChatMessages(tenantUserId) {
+  const landlordId = 1;
+
+  fetch(`http://localhost:5000/api/chat/${tenantUserId}/${landlordId}`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById('messages-container');
+      container.innerHTML = '';
+
+      data.messages.forEach(msg => {
+        const isMine = msg.sender_id == landlordId;
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${isMine ? 'sent' : 'received'}`;
+        bubble.innerHTML = `
+          <strong>${isMine ? 'You' : msg.sender_name}</strong><br>
+          <span>${msg.message}</span><br>
+          <small>${new Date(msg.sent_at).toLocaleString()}</small>
+        `;
+        container.appendChild(bubble);
+      });
+
+      // Ensure scroll to bottom after messages are loaded
+      setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+      }, 100);
+    })
+    .catch(err => console.error('Fetch error:', err));
+}
+
+function sendMessageToTenant() {
+  const landlordId = 1;
+  const tenantUserId = activeTenantId;
+  const messageInput = document.getElementById('message-input');
+  const message = messageInput.value.trim();
+
+  if (!message) {
+    console.error("Message is empty.");
+    return;
+  }
+
+  if (!tenantUserId) {
+    console.error("Tenant user ID is missing.");
+    return;
+  }
+
+  fetch(`http://localhost:5000/api/chat/${landlordId}/${tenantUserId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sender_id: landlordId,
+      message: message
+    })
+  })
+  .then(res => res.json())
+  .then(() => {
+    messageInput.value = '';
+    fetchChatMessages(tenantUserId);
+    
+    // Ensure scroll to bottom after sending message
+    const container = document.getElementById('messages-container');
+    setTimeout(() => {
+      container.scrollTop = container.scrollHeight;
+    }, 100);
+  })
+  .catch(err => console.error("Error sending message:", err));
+}
+
+// Function to update maintenance request status
+async function updateRequestStatus(requestId) {
+  const statusSelect = document.getElementById(`statusSelect-${requestId}`);
+  const reasonInput = document.getElementById(`reasonInput-${requestId}`);
+  const newStatus = statusSelect.value;
+  const reason = reasonInput.value.trim();
+
+  // Require reason for rejected status
+  if (newStatus === 'rejected' && !reason) {
+    alert('Please provide a reason when rejecting a maintenance request.');
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:5000/api/landlord/maintenance-requests/${requestId}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 
+        status: newStatus,
+        reason: reason || null
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert('Status updated successfully!');
+      // Refresh the maintenance requests list
+      document.getElementById('maintenanceBtn').click();
+    } else {
+      alert(data.error || 'Failed to update status');
+    }
+  } catch (error) {
+    console.error('Error updating status:', error);
+    alert('Failed to update status. Please try again.');
+  }
+}
+
+// Update the loadTenants function to properly check blocking status
+async function loadTenants() {
+  try {
+    const response = await fetch('http://localhost:5000/api/landlord/tenants');
+    const data = await response.json();
+    const tenantList = document.getElementById('tenant-list');
+    tenantList.innerHTML = '';
+
+    if (data.tenants?.length) {
+      data.tenants.forEach(tenant => {
+        // Format move-in date
+        let moveInDisplay = 'Not Available';
+        if (tenant.move_in_date) {
+          try {
+            const moveInDate = new Date(tenant.move_in_date);
+            moveInDisplay = moveInDate.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+          } catch (e) {
+            console.error('Move-in date error:', e);
+          }
+        }
+
+        // Format move-out date
+        let moveOutDisplay = 'Currently Active';
+        if (tenant.move_out_date) {
+          try {
+            const moveOutDate = new Date(tenant.move_out_date);
+            if (!isNaN(moveOutDate.getTime())) {
+              moveOutDisplay = moveOutDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              });
+            }
+          } catch (e) {
+            console.error('Move-out date error:', e);
+          }
+        }
+
+        // Check tenant status
+        const isBlocked = tenant.blocked_until && new Date(tenant.blocked_until) > new Date() && tenant.manually_unblocked === 0;
+        const isInactive = tenant.move_out_date && new Date(tenant.move_out_date) <= new Date();
+        
+        // Determine status class and text
+        let statusClass = 'active';
+        let statusText = 'Active';
+        
+        if (isBlocked) {
+          statusClass = 'blocked';
+          statusText = 'Blocked';
+        } else if (isInactive) {
+          statusClass = 'inactive';
+          statusText = 'Inactive';
+        }
+
+        // Create tenant item
+        const tenantItem = document.createElement('div');
+        tenantItem.className = 'tenant-item';
+        tenantItem.innerHTML = `
+          <div class="tenant-header-info">
+            <p><strong>Name:</strong> <span>${tenant.full_name || '<span style="color: #e74c3c;">User data missing</span>'}</span></p>
+          </div>
+          <div class="tenant-details">
+            <p><strong>Status:</strong> <span class="status-badge ${statusClass}">${statusText}</span></p>
+            <p><strong>User ID:</strong> <span>${tenant.user_id || 'N/A'}</span></p>
+            <p><strong>Tenant ID:</strong> <span>${tenant.tenant_id || 'N/A'}</span></p>
+            <p><strong>Room:</strong> <span>${tenant.room_label || 'Not Assigned'}</span></p>
+            <p><strong>Room Type:</strong> <span>${tenant.room_type || 'N/A'}</span></p>
+            <p><strong>Move-in Date:</strong> <span>${moveInDisplay}</span></p>
+            <p><strong>Move-out Date:</strong> <span>${moveOutDisplay}</span></p>
+            <p><strong>Contact:</strong> <span>${tenant.contact_number || 'Not Available'}</span></p>
+            <p><strong>Email:</strong> <span>${tenant.email || 'Not Available'}</span></p>
+          </div>
+          <div class="tenant-actions">
+            <button class="action-btn chat-btn" data-tenant-id="${tenant.user_id}">
+              <i class='bx bx-message-square-dots'></i> Chat
+            </button>
+            <button class="action-btn edit-btn" onclick="editTenantDetails(${tenant.tenant_id})">
+              <i class='bx bx-edit'></i> Edit
+            </button>
+            ${isBlocked ? 
+              `<button class="action-btn unblock-btn" onclick="unblockTenant(${tenant.tenant_id})">
+                <i class='bx bx-lock-open'></i> Unblock
+              </button>` 
+              : ''
+            }
+          </div>
+        `;
+        tenantList.appendChild(tenantItem);
+      });
+
+      // Add event listeners for chat buttons
+      document.querySelectorAll('.chat-btn').forEach(button => {
+        button.addEventListener('click', function() {
+          const tenantId = this.dataset.tenantId;
+          openChat(tenantId);
+        });
+      });
+    } else {
+      tenantList.innerHTML = '<p>No tenants found.</p>';
+    }
+  } catch (error) {
+    console.error('Error loading tenants:', error);
+    tenantList.innerHTML = '<p>Error loading tenants. Please try again.</p>';
+  }
+}
+
+// Function to unblock tenant
+async function unblockTenant(tenantId) {
+  try {
+    const response = await fetch(`http://localhost:5000/api/landlord/unblock-tenant/${tenantId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      alert('Tenant successfully unblocked');
+      loadTenants(); // Refresh the tenant list
+    } else {
+      alert(data.error || 'Failed to unblock tenant');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Failed to unblock tenant');
+  }
+}
+
+function renderMaintenanceRequest(req) {
+  const item = document.createElement('div');
+  item.className = 'maintenance-item';
+  item.innerHTML = `
+    <p><strong>Tenant:</strong> <span>${req.tenant_name}</span></p>
+    <p><strong>Room:</strong> <span>${req.room_label}</span></p>
+    <p><strong>Description:</strong> <span>${req.description}</span></p>
+    <p><strong>Current Status:</strong> <span>${req.status}</span></p>
+    <p><strong>Requested:</strong> <span>${new Date(req.created_at).toLocaleString()}</span></p>
+    <p><strong>Last Updated:</strong> <span>${new Date(req.updated_at).toLocaleString()}</span></p>
+    ${req.reason ? `<p><strong>Last Update Reason:</strong> <span>${req.reason}</span></p>` : ''}
+    <div class="status-group">
+      <label for="statusSelect-${req.request_id}">Change Status:</label>
+      <select id="statusSelect-${req.request_id}">
+        <option value="pending" ${req.status === 'pending' ? 'selected' : ''}>Pending</option>
+        <option value="in_progress" ${req.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+        <option value="completed" ${req.status === 'completed' ? 'selected' : ''}>Completed</option>
+        <option value="rejected" ${req.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+      </select>
+    </div>
+    <div class="reason-group">
+      <label for="reasonInput-${req.request_id}">Reason for Update:</label>
+      <textarea 
+        id="reasonInput-${req.request_id}" 
+        rows="3"
+        placeholder="Please provide a reason for this status update..."
+      ></textarea>
+    </div>
+    <button onclick="updateRequestStatus(${req.request_id})" class="update-status-btn">Update Status</button>
+  `;
+  return item;
+}
+
+  </script>
+
+</body>
+</html>

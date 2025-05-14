@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tenant Dashboard - Boarding House Management System</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(45deg, #0c1022, #1a1b4b);
+      color: #fff;
+    }
+
+    #sidebar {
+      position: fixed;
+      width: 250px;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      transition: all 0.3s ease;
+    }
+
+    #sidebar h2 {
+      color: white;
+      font-size: 1.8rem;
+      margin-bottom: 30px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      color: #a4b0be;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
+    }
+
+    #sidebar a i {
+      margin-right: 10px;
+      font-size: 20px;
+    }
+
+    #sidebar a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #3498db;
+    }
+
+    #content {
+      margin-left: 250px;
+      padding: 30px;
+    }
+
+    .dashboard-section {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    .dashboard-section h3 {
+      color: #3498db;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .dashboard-section p {
+      color: #fff;
+    }
+
+    .boarding-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .info-card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .info-card strong {
+      color: #3498db;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    button {
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      color: #fff;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+      opacity: 0.9;
+    }
+
+    #chatIcon {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      border: none;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #chatIcon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    #chatBox {
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 350px;
+      height: 500px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: none;
+      flex-direction: column;
+      z-index: 999;
+      overflow: hidden;
+    }
+
+    #messages-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+      height: calc(100% - 120px);
+    }
+
+    #messages-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #messages-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #messages-container::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    .chat-bubble {
+      max-width: 80%;
+      padding: 12px 16px;
+      margin: 4px 0;
+      border-radius: 15px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .chat-bubble.sent {
+      background: rgba(52, 152, 219, 0.3);
+      margin-left: auto;
+      border-bottom-right-radius: 5px;
+    }
+
+    .chat-bubble.received {
+      background: rgba(46, 204, 113, 0.3);
+      margin-right: auto;
+      border-bottom-left-radius: 5px;
+    }
+
+    .chat-bubble strong {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 12px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .chat-bubble span {
+      color: #fff;
+    }
+
+    .chat-bubble small {
+      display: block;
+      margin-top: 4px;
+      font-size: 10px;
+      opacity: 0.7;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .chat-input-area {
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #messageInput {
+      width: 100%;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      margin-bottom: 10px;
+      resize: none;
+    }
+
+    #messageInput::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    #messageInput:focus {
+      outline: none;
+      border-color: #3498db;
+      box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    }
+
+    .chat-button-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chat-button-group button {
+      flex: 1;
+      padding: 8px;
+      font-size: 14px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .chat-button-group button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 768px) {
+      #sidebar {
+        width: 70px;
+        padding: 15px 10px;
+      }
+
+      #sidebar h2 {
+        display: none;
+      }
+
+      #sidebar a span {
+        display: none;
+      }
+
+      #content {
+        margin-left: 70px;
+      }
+
+      .boarding-info {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    #credits-display {
+      background: rgba(46, 204, 113, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(46, 204, 113, 0.2);
+      color: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      font-size: 16px;
+    }
+
+    #credits-display strong {
+      color: #2ecc71;
+    }
+
+    #credits-display small {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background-color: #2c3e50;
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      font-size: 14px;
+      z-index: 90;
+    }
+
+    #makePaymentBtn {
+      margin-top: 0;
+      z-index: 2;
+    }
+
+    #paymentHistoryList {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      padding-right: 10px;
+    }
+
+    #paymentHistoryList::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    #paymentHistoryList::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    #paymentHistoryList::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+
+    #paymentHistoryList::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    #paymentHistoryList li {
+      margin-bottom: 15px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    #paymentHistoryList li strong {
+      color: #3498db;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .rent-due-section {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      margin: 20px 0;
+      color: #fff;
+    }
+
+    .rent-due-section strong {
+      color: #3498db;
+    }
+
+    .rent-due-section span[style*="color: green"] {
+      color: #2ecc71 !important;
+    }
+
+    .rent-due-section span[style*="color: #b85c00"] {
+      color: #e74c3c !important;
+    }
+
+    #maintenanceRequestsList li {
+      margin-bottom: 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    #maintenanceRequestsList li strong {
+      color: #3498db;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    #maintenanceRequestsList span[style*="color"] {
+      font-weight: bold;
+    }
+
+    #maintenanceRequestsList span[style*="dc3545"] {
+      color: #e74c3c !important;
+    }
+
+    #maintenanceRequestsList span[style*="28a745"] {
+      color: #2ecc71 !important;
+    }
+
+    #maintenanceRequestsList span[style*="ffc107"] {
+      color: #f1c40f !important;
+    }
+
+    #maintenanceRequestsList span[style*="6c757d"] {
+      color: #95a5a6 !important;
+    }
+
+    #messageInput {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    #messageInput::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .chat-error {
+      color: #e74c3c;
+      text-align: center;
+      padding: 10px;
+      background: rgba(231, 76, 60, 0.1);
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="sidebar">
+    <h2>Welcome, Tenant!</h2>
+    <a href="#" id="myBoardBtn"><i class='bx bx-home'></i><span>My Boarding</span></a>
+    <a href="#" id="paymentHistoryBtn"><i class='bx bx-money'></i><span>Payments</span></a>
+    <a href="#" id="maintenanceBtn"><i class='bx bx-wrench'></i><span>Maintenance</span></a>
+    <a href="#" onclick="logout()"><i class='bx bx-log-out'></i><span>Logout</span></a>
+  </div>
+
+  <div id="content">
+    <div class="dashboard-section">
+      <h3>Welcome to your Dashboard!</h3>
+      <p>Select a menu item from the sidebar to begin.</p>
+    </div>
+  </div>
+
+  <button id="chatIcon"><i class='bx bx-message-dots'></i></button>
+
+  <div id="chatBox">
+    <div id="messages-container"></div>
+    <div class="chat-input-area">
+      <textarea id="messageInput" placeholder="Type your message..." rows="2"></textarea>
+      <div class="chat-button-group">
+        <button onclick="sendMessage()"><i class='bx bx-send'></i> Send</button>
+        <button onclick="closeChat()"><i class='bx bx-x'></i> Close</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 Boarding House Management System
+  </footer>
+
+  <script src="http://localhost:5000/socket.io/socket.io.js"></script>
+  <script>
+    window.onload = function () {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = 'login.html';
+      }
+
+      // Prevent back button after logout
+      history.pushState(null, null, location.href);
+      window.onpopstate = function () {
+        history.go(1);
+      };
+    };
+
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
+
+    function getBoardingInfo() {
+      const tenantData = JSON.parse(localStorage.getItem('user'));
+      const userId = tenantData ? tenantData.user_id : null;
+
+      if (!userId) {
+        alert('User ID not found');
+        return;
+      }
+
+      fetch(`http://localhost:5000/api/tenant/boarding-info/${userId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch boarding info');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.boardingInfo) {
+            const info = data.boardingInfo;
+            
+            // Update localStorage with room_id
+            const userData = JSON.parse(localStorage.getItem('user')) || {};
+            userData.room_id = info.room_id;
+            localStorage.setItem('user', JSON.stringify(userData));
+            
+            document.getElementById('content').innerHTML = `
+              <h3>My Boarding Info</h3>
+              <div class="boarding-info">
+                <div class="info-card">
+                  <strong>Name:</strong> ${info.full_name}
+                </div>
+                <div class="info-card">
+                  <strong>Tenant ID:</strong> ${info.tenant_id}
+                </div>
+                <div class="info-card">
+                  <strong>Room ID:</strong> ${info.room_id}
+                </div>
+                <div class="info-card">
+                  <strong>Room:</strong> ${info.room_label}
+                </div>
+                <div class="info-card">
+                  <strong>Room Price:</strong> ${info.price}
+                </div>
+                <div class="info-card">
+                  <strong>Move-in Date:</strong> ${new Date(info.move_in_date).toLocaleDateString()}
+                </div>
+              </div>
+            `;
+          } else {
+            alert('No boarding information found.');
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching boarding info:', error);
+          alert('Failed to load boarding info');
+        });
+    }
+
+    function getPaymentHistory() {
+      const tenantData = JSON.parse(localStorage.getItem('user'));
+      const userId = tenantData ? tenantData.user_id : null;
+
+      if (!userId) {
+        alert('User ID not found');
+        return;
+      }
+
+      fetch(`http://localhost:5000/api/tenant/payment-history/${userId}`)
+        .then(res => res.json())
+        .then(data => {
+          let html = `<h3>Payment History</h3>`;
+
+          // Show credit balance if any
+          if (data.creditBalance > 0) {
+            html += `
+              <div id="credits-display">
+                <strong>✅ Credit Balance Available:</strong> ₱${data.creditBalance.toFixed(2)}
+                <small style="display: block; margin-top: 5px; opacity: 0.8;">This amount will be automatically applied to your next rent payment.</small>
+              </div>
+            `;
+          }
+
+          // Show overdue rent if any
+          if (data.unpaid) {
+            const amount_due = parseFloat(data.unpaid.amount_due) || 0;
+            const paid_amount = parseFloat(data.unpaid.paid_amount) || 0;
+            const remaining = amount_due - paid_amount;
+            const due_date = new Date(data.unpaid.due_date);
+
+            html += `
+              <div class="rent-due-section">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div>
+                    <strong>📅 Current Rent Period</strong><br>
+                    <strong>Amount Due:</strong> ₱${amount_due.toFixed(2)} <br>
+                    <strong>Current Payment:</strong> ₱${(paid_amount - (data.creditBalance || 0)).toFixed(2)} <br>
+                    ${data.creditBalance > 0 ? `<strong>Applied Credit:</strong> ₱${data.creditBalance.toFixed(2)} <br>` : ''}
+                    <strong>Status:</strong> ${remaining <= 0 ? '<span style="color: #2ecc71;">Fully Paid</span>' : `<span style="color: #e74c3c;">₱${remaining.toFixed(2)} remaining</span>`} <br>
+                    <strong>Due Date:</strong> ${new Date(due_date).toLocaleDateString()}
+                  </div>
+                  <button id="makePaymentBtn" style="position: static; margin: 0;">Make Payment</button>
+                </div>
+              </div>
+            `;
+          }
+
+          // Show payment history
+          html += `<ul id="paymentHistoryList">`;
+
+          if (data.paymentHistory && data.paymentHistory.length > 0) {
+            data.paymentHistory.forEach(payment => {
+              html += `
+                <li>
+                  <strong>Amount:</strong> ₱${payment.amount} <br>
+                  <strong>Method:</strong> ${payment.method} <br>
+                  <strong>Room:</strong> ${payment.room_label || 'N/A'} <br>
+                  <strong>Paid At:</strong> ${new Date(payment.paid_at).toLocaleDateString()}
+                </li>
+              `;
+            });
+          } else {
+            html += `<p style="color: #fff;">No payments made.</p>`;
+          }
+
+          html += `</ul>
+            <button id="makePaymentBtn">Make Payment</button>
+          `;
+
+          document.getElementById('content').innerHTML = html;
+
+          const makePaymentBtn = document.getElementById('makePaymentBtn');
+          makePaymentBtn.addEventListener('click', () => {
+            window.location.href = 'payment_page.html';
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching payment history:', error);
+          alert('Failed to load payment history');
+        });
+    }
+
+    function getMaintenanceRequests() {
+      const tenantData = JSON.parse(localStorage.getItem('user'));
+      const userId = tenantData ? tenantData.user_id : null;
+
+      if (!userId) {
+        alert('User ID not found');
+        return;
+      }
+
+      fetch(`http://localhost:5000/api/tenant/maintenance-requests/${userId}`)
+        .then(response => response.json())
+        .then(data => {
+          let html = `
+            <h3>Maintenance Requests</h3>
+            <ul id="maintenanceRequestsList" style="list-style: none; padding: 0;">
+          `;
+
+          if (data.maintenanceRequests && data.maintenanceRequests.length > 0) {
+            data.maintenanceRequests.forEach(request => {
+              const statusClass = request.status === 'rejected' ? '#e74c3c' : 
+                                request.status === 'completed' ? '#2ecc71' :
+                                request.status === 'in_progress' ? '#f1c40f' : '#95a5a6';
+              
+              html += `
+                <li>
+                  <strong>Room:</strong> ${request.room_label} <br>
+                  <strong>Description:</strong> ${request.description} <br>
+                  <strong>Status:</strong> <span style="color: ${statusClass}; font-weight: bold;">${request.status.toUpperCase()}</span> <br>
+                  <strong>Requested On:</strong> ${new Date(request.created_at).toLocaleDateString()} <br>
+                  ${request.reason ? `<strong>Status Update Reason:</strong> ${request.reason} <br>` : ''}
+                </li>
+              `;
+            });
+          } else {
+            html += `<p style="color: #fff;">No requests made.</p>`;
+          }
+
+          html += `</ul>
+            <button id="makeRequestBtn" style="margin-top: 20px;">Make Request</button>
+          `;
+
+          document.getElementById('content').innerHTML = html;
+
+          const makeRequestBtn = document.getElementById('makeRequestBtn');
+          makeRequestBtn.addEventListener('click', () => {
+            window.location.href = 'maintenanceReq_page.html';
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching maintenance requests:', error);
+          alert('Failed to load maintenance requests');
+        });
+    }
+
+    function clearAndRender(targetElement, content) {
+      targetElement.innerHTML = '';
+      targetElement.innerHTML = content;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const myBoardBtn = document.getElementById('myBoardBtn');
+      const paymentHistoryBtn = document.getElementById('paymentHistoryBtn');
+      const maintenanceBtn = document.getElementById('maintenanceBtn');
+      const chatIcon = document.getElementById('chatIcon');
+
+      if (myBoardBtn) {
+        myBoardBtn.addEventListener('click', function (event) {
+          event.preventDefault();
+          getBoardingInfo();
+        });
+      }
+
+      if (paymentHistoryBtn) {
+        paymentHistoryBtn.addEventListener('click', function (event) {
+          event.preventDefault();
+          getPaymentHistory();
+        });
+      }
+
+      if (maintenanceBtn) {
+        maintenanceBtn.addEventListener('click', function (event) {
+          event.preventDefault();
+          getMaintenanceRequests();
+        });
+      }
+
+      if (chatIcon) {
+        chatIcon.addEventListener('click', function (event) {
+          event.preventDefault();
+          toggleChatBox();
+        });
+      }
+    });
+
+    // Toggle chat box and fetch messages
+    function toggleChatBox() {
+      const chatBox = document.getElementById('chatBox');
+      const isVisible = chatBox.style.display === 'block';
+      chatBox.style.display = isVisible ? 'none' : 'block';
+
+      if (!isVisible) {
+        fetchChatMessagesForTenant(); // Load messages
+      }
+    }
+
+    function fetchChatMessagesForTenant() {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const tenantId = user?.user_id;
+      const landlordId = user?.landlord_id ?? 1;
+
+      if (!tenantId || !landlordId) {
+        alert('Missing tenant or landlord ID');
+        return;
+      }
+
+      fetch(`http://localhost:5000/api/chat/${tenantId}/${landlordId}`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('messages-container');
+          container.innerHTML = '';
+
+          data.messages.forEach(msg => {
+            const isMine = Number(msg.sender_id) === tenantId;
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble ${isMine ? 'sent' : 'received'}`;
+            bubble.innerHTML = `
+              <strong>${isMine ? 'You' : msg.sender_name}</strong>
+              <span>${msg.message}</span>
+              <small>${new Date(msg.sent_at).toLocaleString()}</small>
+            `;
+            container.appendChild(bubble);
+          });
+
+          container.scrollTop = container.scrollHeight;
+        })
+        .catch(err => console.error('Fetch error:', err));
+    }
+
+    function fetchChatMessages(tenantUserId) {
+      const user = JSON.parse(localStorage.getItem('user'));
+      const currentTenantId = user?.user_id;
+      const landlordId = user?.landlord_id ?? 1;
+
+      if (!currentTenantId) {
+        console.error('User data not found');
+        return;
+      }
+
+      fetch(`http://localhost:5000/api/chat/${tenantUserId}/${landlordId}`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('messages-container');
+          container.innerHTML = '';
+
+          if (data.messages && Array.isArray(data.messages)) {
+            data.messages.forEach(msg => {
+              const isMine = Number(msg.sender_id) === currentTenantId;
+              const bubble = document.createElement('div');
+              bubble.className = `chat-bubble ${isMine ? 'sent' : 'received'}`;
+              bubble.innerHTML = `
+                <strong>${isMine ? 'You' : msg.sender_name || 'Unknown'}</strong>
+                <span>${msg.message}</span>
+                <small>${new Date(msg.sent_at).toLocaleString()}</small>
+              `;
+              container.appendChild(bubble);
+            });
+
+            // Ensure scroll to bottom
+            setTimeout(() => {
+              container.scrollTop = container.scrollHeight;
+            }, 100);
+          } else {
+            console.error('Invalid message data received:', data);
+            container.innerHTML = '<div class="chat-error">Failed to load messages</div>';
+          }
+        })
+        .catch(err => {
+          console.error('Error fetching messages:', err);
+          const container = document.getElementById('messages-container');
+          container.innerHTML = '<div class="chat-error">Failed to load messages</div>';
+        });
+    }
+
+    function sendMessage() {
+      const messageInput = document.getElementById('messageInput');
+      const message = messageInput.value.trim();
+      const user = JSON.parse(localStorage.getItem('user'));
+      const tenantId = user?.user_id;
+      const landlordId = user?.landlord_id ?? 1;
+
+      if (!message) {
+        return;
+      }
+
+      if (!tenantId) {
+        console.error("User data not found");
+        alert("Please log in again");
+        return;
+      }
+
+      fetch(`http://localhost:5000/api/chat/${tenantId}/${landlordId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sender_id: tenantId, message })
+      })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(() => {
+          messageInput.value = '';
+          fetchChatMessages(tenantId);
+        })
+        .catch(err => {
+          console.error("Error sending message:", err);
+          alert("Failed to send message. Please try again.");
+        });
+    }
+
+    // Socket.IO
+    const socket = io('http://localhost:5000');
+    socket.on('connect', () => console.log('Socket connected'));
+
+    socket.on('chat message', data => {
+      const container = document.getElementById('messages-container');
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble received';
+      bubble.innerHTML = `
+        <strong>${data.sender_name || 'Unknown'}</strong>
+        <span>${data.message}</span>
+        <small>${new Date(data.sent_at).toLocaleString()}</small>
+      `;
+      container.appendChild(bubble);
+      
+      setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+      }, 100);
+    });
+
+    function closeChat() {
+      const chatBox = document.getElementById('chatBox');
+      chatBox.style.display = 'none';
+      activeTenantId = null;
+    }
+
+    // Add event listener for Enter key in message input
+    document.addEventListener('DOMContentLoaded', function() {
+      const messageInput = document.getElementById('messageInput');
+      if (messageInput) {
+        messageInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Tenant - Boarding House Management System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(45deg, #0c1022, #1a1b4b);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .system-title {
+      font-size: 2.5rem;
+      color: white;
+      text-align: center;
+      margin-bottom: 40px;
+      font-weight: 700;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .form-container {
+      width: 100%;
+      max-width: 600px;
+      background: rgba(13, 17, 38, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 30px;
+      color: #3498db;
+      font-weight: 600;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(13, 17, 38, 0.6);
+      color: white;
+      font-size: 16px;
+    }
+
+    input:focus, select:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+    }
+
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+      padding-right: 2.5rem;
+    }
+
+    select option {
+      background-color: #1a1b4b;
+      color: #fff;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    button {
+      flex: 1;
+      padding: 14px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    button[type="button"] {
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background-color: rgba(44, 62, 80, 0.8);
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      font-size: 14px;
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 576px) {
+      .form-container {
+        padding: 20px;
+      }
+
+      .system-title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 class="system-title">BOARDING HOUSE MANAGEMENT SYSTEM</h1>
+
+  <div class="form-container">
+    <h2>Edit Tenant Details</h2>
+    <form id="editTenantForm">
+      <input type="hidden" id="tenantId" />
+
+      <div class="form-group">
+        <label for="tenantName">Full Name</label>
+        <input type="text" id="tenantName" required />
+      </div>
+
+      <div class="form-group">
+        <label for="tenantEmail">Email</label>
+        <input type="email" id="tenantEmail" required />
+      </div>
+
+      <div class="form-group">
+        <label for="tenantRoom">Room</label>
+        <select id="tenantRoom" required></select>
+      </div>
+
+      <div class="form-group">
+        <label for="moveInDate">Move-In Date</label>
+        <input type="date" id="moveInDate" required />
+      </div>
+
+      <div class="form-group">
+        <label for="moveOutDate">Move-Out Date</label>
+        <input type="date" id="moveOutDate" />
+      </div>
+
+      <div class="button-group">
+        <button type="submit">Save Changes</button>
+        <button type="button" onclick="window.location.href='landlord_page.html'">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <footer>
+    &copy; 2025 Boarding House Management System
+  </footer>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const tenantId = urlParams.get('tenantId');
+    const form = document.getElementById('editTenantForm');
+    let currentRoomId = null;
+
+    async function fetchTenantDetails() {
+      try {
+        const res = await fetch(`http://localhost:5000/api/landlord/tenants/${tenantId}`);
+        const data = await res.json();
+
+        if (!data) {
+          alert('Tenant not found!');
+          window.location.href = 'landlord_page.html';
+          return;
+        }
+
+        document.getElementById('tenantId').value = data.tenant_id;
+        document.getElementById('tenantName').value = data.tenant_name;
+        document.getElementById('tenantEmail').value = data.email;
+        document.getElementById('moveInDate').value = data.move_in_date?.split('T')[0] || '';
+        document.getElementById('moveOutDate').value = data.move_out_date?.split('T')[0] || '';
+        currentRoomId = data.room_id;
+
+        fetchRooms();
+      } catch (err) {
+        console.error(err);
+        alert('Error fetching tenant details.');
+        window.location.href = 'landlord_page.html';
+      }
+    }
+
+    async function fetchRooms() {
+      try {
+        const res = await fetch('http://localhost:5000/api/landlord/rooms');
+        const rooms = await res.json();
+        const select = document.getElementById('tenantRoom');
+        select.innerHTML = '';
+
+        rooms.forEach(room => {
+          const option = document.createElement('option');
+          option.value = room.room_id;
+          option.textContent = room.room_label;
+          if (room.room_id === currentRoomId) {
+            option.selected = true;
+          }
+          select.appendChild(option);
+        });
+
+        if (rooms.length === 0) {
+          alert('No rooms available!');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error fetching room list.');
+      }
+    }
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const full_name = document.getElementById('tenantName').value;
+      const email = document.getElementById('tenantEmail').value;
+      const roomId = document.getElementById('tenantRoom').value;
+      const moveInDate = document.getElementById('moveInDate').value;
+      const moveOutDate = document.getElementById('moveOutDate').value;
+
+      if (moveOutDate && new Date(moveOutDate) < new Date(moveInDate)) {
+        alert("Move-out date can't be before move-in date!");
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/landlord/tenants/update/${tenantId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ full_name, email, roomId, moveInDate, moveOutDate })
+        });
+
+        const result = await res.json();
+
+        if (res.ok) {
+          alert('Tenant updated successfully!');
+          window.location.replace('landlord_page.html');
+        } else {
+          alert(result.error || 'Failed to update tenant');
+        }
+      } catch (err) {
+        console.error('Error updating tenant:', err);
+        alert('An error occurred.');
+      }
+    });
+
+    if (tenantId) {
+      fetchTenantDetails();
+    } else {
+      alert('No tenant ID provided.');
+      window.location.replace('landlord_page.html');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Boarding House Management System</title>
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      min-height: 100vh;
+      background: #0c1022;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .animated-background {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0;
+      left: 0;
+      background: linear-gradient(45deg, #0c1022, #1a1b4b);
+      z-index: 0;
+    }
+
+    .animated-background::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, transparent 20%, #0c1022 70%);
+      animation: moveGradient 15s linear infinite;
+    }
+
+    @keyframes moveGradient {
+      0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+      100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    .floating-particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: float 6s infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(100px);
+        opacity: 0;
+      }
+    }
+
+    .main-container {
+      display: flex;
+      width: 100%;
+      z-index: 2;
+    }
+
+    .description-section {
+      flex: 1;
+      padding: 60px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .description-section h1 {
+      font-size: 3.5rem;
+      margin-bottom: 30px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: left;
+    }
+
+    .description-section p {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: #a4b0be;
+    }
+
+    .feature-list {
+      margin-top: 30px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      color: #a4b0be;
+    }
+
+    .feature-item i {
+      margin-right: 15px;
+      color: #3498db;
+      font-size: 24px;
+    }
+
+    .login-section {
+      width: 450px;
+      padding: 60px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .login-container {
+      width: 100%;
+    }
+
+    .login-container h2 {
+      color: white;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 30px;
+    }
+
+    .password-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #a4b0be;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+      width: auto;
+      font-size: 18px;
+    }
+
+    .password-toggle:hover {
+      color: #3498db;
+      transform: translateY(-50%);
+      box-shadow: none;
+    }
+
+    .password-toggle i {
+      pointer-events: none;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .input-group label {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a4b0be;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .input-group input:focus ~ label,
+    .input-group input:valid ~ label {
+      top: -10px;
+      left: 5px;
+      font-size: 12px;
+      color: #3498db;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(45deg, #3498db, #2ecc71);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+
+    .signup-link {
+      margin-top: 25px;
+      text-align: center;
+      color: #a4b0be;
+    }
+
+    .signup-link a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .signup-link a:hover {
+      color: #2ecc71;
+    }
+
+    #errorMsg {
+      color: #e74c3c;
+      text-align: center;
+      font-size: 14px;
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: rgba(231, 76, 60, 0.1);
+      display: none;
+    }
+
+    @media (max-width: 1024px) {
+      .description-section {
+        padding: 40px;
+      }
+      .description-section h1 {
+        font-size: 2.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
+      .description-section {
+        padding: 30px;
+      }
+      .login-section {
+        width: 100%;
+        padding: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="animated-background"></div>
+  <div class="floating-particles" id="particles"></div>
+  
+  <div class="main-container">
+    <div class="description-section">
+      <h1>Your All-in-One Boarding House Management Solution</h1>
+      <p>Experience seamless boarding house management with our comprehensive system designed to make your life easier.Simplify every aspect of managing your boarding house — from room assignments to rent payments — with our easy-to-use, all-in-one platform.</p>
+      
+      <div class="feature-list">
+        <div class="feature-item">
+          <i class='bx bx-home-circle'></i>
+          <span>Efficient Room Management</span>
+        </div>
+        <div class="feature-item">
+          <i class='bx bx-money'></i>
+          <span>Streamlined Rent Payments</span>
+        </div>
+        <div class="feature-item">
+          <i class='bx bx-wrench'></i>
+          <span>Quick Maintenance Requests</span>
+        </div>
+        <div class="feature-item">
+          <i class='bx bx-conversation'></i>
+          <span>Direct Communication Channel</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-section">
+      <div class="login-container">
+        <h2>Log In</h2>
+        <form id="loginForm">
+          <div class="input-group">
+            <input type="email" id="email" required>
+            <label for="email">Email Address</label>
+          </div>
+          <div class="input-group">
+            <div class="password-container">
+              <input type="password" id="password" required>
+              <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                <i class='bx bx-hide'></i>
+              </button>
+              <label for="password">Password</label>
+            </div>
+          </div>
+          <button type="submit">Login</button>
+          <div id="errorMsg"></div>
+          <div class="signup-link">
+            Don't have an account? <a href="signup.html">Sign up</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Create floating particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const numberOfParticles = 50;
+
+      for (let i = 0; i < numberOfParticles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // Random position
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        
+        // Random animation duration
+        particle.style.animationDuration = (Math.random() * 6 + 3) + 's';
+        
+        // Random delay
+        particle.style.animationDelay = (Math.random() * 5) + 's';
+        
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Initialize particles
+    createParticles();
+
+    // Password visibility toggle
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.nextElementSibling.querySelector('i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'bx bx-show';
+      } else {
+        input.type = 'password';
+        icon.className = 'bx bx-hide';
+      }
+    }
+
+    // Form submission logic
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      try {
+        const response = await fetch('http://localhost:5000/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+
+          // Redirect based on user role
+          if (data.user.role === 'landlord') {
+            window.location.href = 'landlord_page.html';
+          } else if (data.user.role === 'tenant') {
+            window.location.href = 'tenant_page.html';
+          }
+        } else {
+          if (data.blocked) {
+            showBlockedModal(data.blocked_until);
+          } else {
+            errorMsg.style.display = 'block';
+            errorMsg.textContent = data.error || 'Invalid credentials';
+          }
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        errorMsg.style.display = 'block';
+        errorMsg.textContent = 'An error occurred. Please try again.';
+      }
+    });
+
+    function showBlockedModal(blockedUntil) {
+      const modal = document.getElementById('blockedModal');
+      const blockedDate = new Date(blockedUntil).toLocaleDateString();
+      document.getElementById('blockedUntilDate').textContent = blockedDate;
+      modal.style.display = 'block';
+    }
+
+    // Input animation
+    document.querySelectorAll('.input-group input').forEach(input => {
+      input.addEventListener('focus', () => {
+        input.parentElement.classList.add('focused');
+      });
+      
+      input.addEventListener('blur', () => {
+        if (!input.value) {
+          input.parentElement.classList.remove('focused');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

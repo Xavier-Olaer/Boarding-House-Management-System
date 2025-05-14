@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../BOARDING-HOUSE-FRONTEND"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "boarding-house-backend"
+	}
+}
