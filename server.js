@@ -71,7 +71,7 @@ io.on('error', (err) => {
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -155,16 +155,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Root route
 app.get('/', (req, res) => {
-    try {
-        res.sendFile(path.join(__dirname, 'public', 'index.html'));
-    } catch (err) {
-        res.status(200).json({
-            status: 'API is running',
-            documentation: 'Please check the README.md file for API documentation',
-            health_check: '/health',
-            timestamp: new Date().toISOString()
-        });
-    }
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // SOCKET.IO with error handling
